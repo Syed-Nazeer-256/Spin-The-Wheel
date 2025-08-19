@@ -281,7 +281,7 @@ with col_content:
     if st.session_state.spinning:
         st.markdown('<div class="spinning-text">🎪 The wheel is spinning...</div>', unsafe_allow_html=True)
     else:
-        st.markdown('<div style="display: flex; justify-content: flex-start;">', unsafe_allow_html=True)
+        st.markdown('<div style="display: flex; justify-content: flex-start; margin-left: -20px;">', unsafe_allow_html=True)
         if st.button("Spin The Wheel", key="spin_btn"):
             st.session_state.spinning = True
             base_rotation = random.randint(720, 1800)
