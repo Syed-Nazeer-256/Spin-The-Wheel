@@ -14,7 +14,7 @@ st.markdown("""
     font-size: 2.5rem; 
     color: #2c3e50;
     font-weight: 300;
-    margin: 30px 0 50px 0;
+    margin: 20px 0 30px 0;
     letter-spacing: 3px;
 ">Spin the Wheel</h1>
 """, unsafe_allow_html=True)
@@ -36,7 +36,7 @@ if 'spinning' not in st.session_state:
 if 'spin_result' not in st.session_state:
     st.session_state.spin_result = ""
 
-# Clean, minimal CSS for elegant styling
+# Enhanced CSS for better layout and responsiveness
 st.markdown(f'''
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
@@ -49,21 +49,40 @@ body {{
     background: #fafafa;
 }}
 
+.main-container {{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 80vh;
+    padding: 20px;
+}}
+
+.wheel-section {{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
+    width: 100%;
+}}
+
 .wheel-container {{
     position: relative;
-    width: 100%;
-    height: auto; /* Let height adjust based on content */
-    margin: 40px auto;
+    width: 400px;
+    height: 400px;
+    margin: 20px auto;
     filter: drop-shadow(0 8px 32px rgba(0,0,0,0.12));
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }}
 
 .wheel {{
-    max-width: 75%; /* Ensure it scales down within its container */
-    height: auto;    /* Maintain aspect ratio */
+    width: 100%;
+    height: 100%;
     transition: transform 3.5s cubic-bezier(0.23, 1, 0.32, 1);
     transform: rotate({st.session_state.rotation}deg);
-    display: block;
     border-radius: 50%;
+    object-fit: contain;
 }}
 
 .arrow {{
@@ -77,18 +96,27 @@ body {{
     border-right: 20px solid transparent;
     border-top: 40px solid #ffd700;
     z-index: 10;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}}
+
+.button-section {{
+    display: flex;
+    justify-content: center;
+    margin: 30px 0;
+    width: 100%;
 }}
 
 .result-container {{
     background: white;
     border-radius: 12px;
     padding: 32px;
-    margin: 80px auto;
-    max-width: 700px;
+    margin: 20px auto;
+    max-width: 600px;
     text-align: center;
     box-shadow: 0 4px 24px rgba(0,0,0,0.08);
     border: 1px solid #e1e8ed;
     animation: fadeInUp 0.4s ease-out;
+    width: 90%;
 }}
 
 @keyframes fadeInUp {{
@@ -110,7 +138,7 @@ body {{
 }}
 
 .result-question {{
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     color: #2c3e50;
     font-weight: 500;
     line-height: 1.5;
@@ -122,18 +150,110 @@ body {{
     font-weight: 400;
     text-align: center;
     margin: 30px 0;
+    animation: pulse 1.5s infinite;
+}}
+
+@keyframes pulse {{
+    0%, 100% {{
+        opacity: 1;
+    }}
+    50% {{
+        opacity: 0.6;
+    }}
+}}
+
+/* Golden button styling with lightning effects */
+div.stButton > button {{
+    background: linear-gradient(145deg, #ffd700, #ffb347) !important;
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 18px 50px !important;
+    font-size: 1.3rem !important;
+    font-weight: 600 !important;
+    color: #2c3e50 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    letter-spacing: 1px !important;
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    min-width: 200px !important;
+}}
+
+div.stButton > button:hover {{
+    background: linear-gradient(145deg, #ffed4e, #ffd700) !important;
+    transform: translateY(-3px) !important;
+    box-shadow: 
+        0 10px 30px rgba(255, 215, 0, 0.5),
+        0 0 25px rgba(255, 215, 0, 0.4),
+        inset 0 2px 0 rgba(255, 255, 255, 0.3) !important;
+    color: #1a252f !important;
+}}
+
+div.stButton > button:active {{
+    transform: translateY(-1px) !important;
+}}
+
+div.stButton > button:focus {{
+    outline: none !important;
+    box-shadow: 
+        0 0 0 4px rgba(255, 215, 0, 0.4),
+        0 10px 30px rgba(255, 215, 0, 0.5) !important;
+}}
+
+/* Lightning effect on hover */
+div.stButton > button::before {{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+    transition: left 0.6s ease;
+}}
+
+div.stButton > button:hover::before {{
+    left: 100%;
+}}
+
+div.stButton {{
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}}
+
+/* Hide streamlit elements for clean look */
+.stDeployButton {{ display: none; }}
+#MainMenu {{ visibility: hidden; }}
+.stHeader {{ display: none; }}
+footer {{ visibility: hidden; }}
+
+/* Responsive design */
+@media (max-width: 768px) {{
+    .wheel-container {{
+        width: 300px;
+        height: 300px;
+    }}
+    
+    .result-container {{
+        padding: 24px;
+        margin: 15px;
+    }}
+    
+    .result-question {{
+        font-size: 1.1rem;
+    }}
 }}
 
 </style>
 ''', unsafe_allow_html=True)
 
-# Remove floating particles background
-# Clean, minimal approach
-
-col_wheel, col_result = st.columns(2)
+# Create a two-column layout
+col_wheel, col_content = st.columns([1.2, 1])
 
 with col_wheel:
-    # Clean wheel and arrow display
+    # Wheel display
     wheel_class = "wheel spinning" if st.session_state.spinning else "wheel"
     st.markdown(f'''
     <div class="wheel-container">
@@ -142,7 +262,34 @@ with col_wheel:
     </div>
     ''', unsafe_allow_html=True)
 
-
+with col_content:
+    # Result section first
+    if st.session_state.spin_result and not st.session_state.spinning:
+        st.markdown(f'''
+        <div class="result-container">
+            <div class="result-text">🎉 Result:</div>
+            <div class="result-question">{st.session_state.spin_result}</div>
+        </div>
+        ''', unsafe_allow_html=True)
+    elif not st.session_state.spinning:
+        st.markdown('''
+        <div class="result-container" style="background: #f8f9fa; border: 2px dashed #dee2e6;">
+            <div class="result-text">Ready to spin?</div>
+            <div class="result-question">Click the button below to get your AWS S3 question!</div>
+        </div>
+        ''', unsafe_allow_html=True)
+    
+    # Button section - positioned below result
+    if st.session_state.spinning:
+        st.markdown('<div class="spinning-text">🎪 The wheel is spinning...</div>', unsafe_allow_html=True)
+    else:
+        if st.button("🎯 SPIN THE WHEEL", key="spin_btn"):
+            st.session_state.spinning = True
+            base_rotation = random.randint(720, 1800)
+            extra_rotation = random.randint(0, 359)
+            st.session_state.rotation += base_rotation + extra_rotation
+            st.session_state.spin_result = ""
+            st.rerun()
 
 # After the spin, determine the result
 if st.session_state.spinning:
@@ -177,102 +324,3 @@ if st.session_state.spinning:
     segment_index = int(((360 - final_angle + 45) % 360) / 30)
     st.session_state.spin_result = questions[segment_index]
     st.rerun()
-
-with col_result:
-    # Clean result display
-    if st.session_state.spin_result and not st.session_state.spinning:
-        st.markdown(f'''
-        <div class="result-container">
-            <div class="result-text">Result:</div>
-            <div class="result-question">{st.session_state.spin_result}</div>
-        </div>
-        ''', unsafe_allow_html=True)
-
-    # Spin button logic, centered
-    if st.session_state.spinning:
-        st.markdown('<div class="spinning-text">Spinning...</div>', unsafe_allow_html=True)
-    else:
-        if st.button("Spin", key="spin_btn"):
-            st.session_state.spinning = True
-            base_rotation = random.randint(720, 1800)
-            extra_rotation = random.randint(0, 359)
-            st.session_state.rotation += base_rotation + extra_rotation
-            st.session_state.spin_result = ""
-            st.rerun()
-
-
-
-# Golden button styling with lightning effects
-st.markdown('''
-<style>
-/* Golden lightning button styling */
-div.stButton > button {
-    background: linear-gradient(145deg, #ffd700, #ffb347) !important;
-    border: none !important;
-    border-radius: 8px !important;
-    padding: 16px 40px !important; /* Increased padding */
-    font-size: 1.2rem !important;   /* Increased font size */
-    font-weight: 600 !important;
-    color: #2c3e50 !important;
-    cursor: pointer !important;
-    transition: all 0.3s ease !important;
-    width: 100% !important;
-    letter-spacing: 0.5px !important;
-    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3) !important;
-    position: relative !important;
-    overflow: hidden !important;
-}
-
-div.stButton > button:hover {
-    background: linear-gradient(145deg, #ffed4e, #ffd700) !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 
-        0 8px 25px rgba(255, 215, 0, 0.5),
-        0 0 20px rgba(255, 215, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
-    color: #1a252f !important;
-}
-
-div.stButton > button:active {
-    transform: translateY(0px) !important;
-}
-
-div.stButton > button:focus {
-    outline: none !important;
-    box-shadow: 
-        0 0 0 3px rgba(255, 215, 0, 0.4),
-        0 8px 25px rgba(255, 215, 0, 0.5) !important;
-}
-
-/* Lightning effect on hover */
-div.stButton > button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-    transition: left 0.5s ease;
-}
-
-div.stButton > button:hover::before {
-    left: 100%;
-}
-
-
-
-div.stButton {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-}
-
-/* Hide streamlit elements for clean look */
-.stDeployButton { display: none; }
-#MainMenu { visibility: hidden; }
-.stHeader { display: none; }
-footer { visibility: hidden; }
-
-</style>
-''', unsafe_allow_html=True)
