@@ -24,11 +24,9 @@ def get_image_as_base64(path):
     with open(path, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode()
 
-# Image paths
+# Image path
 image_path = "spin-wheel-01.png"
-logo_path = "rapyder-logo.png"  # Add your Rapyder logo file here
 image_base64 = get_image_as_base64(image_path)
-logo_base64 = get_image_as_base64(logo_path)
 
 # Initialize session state
 if 'rotation' not in st.session_state:
@@ -285,7 +283,7 @@ with col_content:
     if st.session_state.spinning:
         st.markdown('<div class="spinning-text">🎪 The wheel is spinning...</div>', unsafe_allow_html=True)
     else:
-        if st.button("SPIN", key="spin_btn"):
+        if st.button("🎯 SPIN THE WHEEL", key="spin_btn"):
             st.session_state.spinning = True
             base_rotation = random.randint(720, 1800)
             extra_rotation = random.randint(0, 359)
