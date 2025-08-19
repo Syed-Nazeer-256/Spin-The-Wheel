@@ -87,12 +87,7 @@ body {{
     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
 }}
 
-.button-section {{
-    display: flex;
-    justify-content: center;
-    margin: 30px 0;
-    width: 100%;
-}}
+
 
 .result-container {{
     background: white;
@@ -249,17 +244,7 @@ footer {{ visibility: hidden; }}
 
 
 
-# Clean, minimal title
-st.markdown("""
-<h1 style="
-    text-align: center; 
-    font-size: 2.5rem; 
-    color: #2c3e50;
-    font-weight: bold;
-    margin: 20px 0 30px 0;
-    letter-spacing: 3px;
-">Spin the Wheel</h1>
-""", unsafe_allow_html=True)
+
 
 # Create a two-column layout
 col_wheel, col_content = st.columns([1.2, 1])
@@ -296,13 +281,15 @@ with col_content:
     if st.session_state.spinning:
         st.markdown('<div class="spinning-text">🎪 The wheel is spinning...</div>', unsafe_allow_html=True)
     else:
-        if st.button("SPIN", key="spin_btn"):
+        st.markdown('<div style="display: flex; justify-content: center;">', unsafe_allow_html=True)
+        if st.button("Spin The Wheel", key="spin_btn"):
             st.session_state.spinning = True
             base_rotation = random.randint(720, 1800)
             extra_rotation = random.randint(0, 359)
             st.session_state.rotation += base_rotation + extra_rotation
             st.session_state.spin_result = ""
             st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
 # After the spin, determine the result
