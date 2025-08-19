@@ -26,9 +26,7 @@ def get_image_as_base64(path):
 
 # Image paths
 image_path = "spin-wheel-01.png"
-logo_path = "rapyder-logo.png"  # Add your Rapyder logo file here
 image_base64 = get_image_as_base64(image_path)
-logo_base64 = get_image_as_base64(logo_path)
 
 # Initialize session state
 if 'rotation' not in st.session_state:
@@ -223,6 +221,8 @@ div.stButton {{
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
+    width: 100% !important;
+    margin: 0 auto !important;
 }}
 
 /* Hide streamlit elements for clean look */
@@ -269,7 +269,7 @@ with col_content:
     if st.session_state.spin_result and not st.session_state.spinning:
         st.markdown(f'''
         <div class="result-container">
-            <div class="result-text">🎉 Result:</div>
+            <div class="result-text">🎉 Question!</div>
             <div class="result-question">{st.session_state.spin_result}</div>
         </div>
         ''', unsafe_allow_html=True)
@@ -286,7 +286,7 @@ with col_content:
         st.markdown('<div class="spinning-text">🎪 The wheel is spinning...</div>', unsafe_allow_html=True)
     else:
         # Add explicit centering container
-        st.markdown('<div class="button-wrapper">', unsafe_allow_html=True)
+        st.markdown('<div class="button-section">', unsafe_allow_html=True)
         if st.button("SPIN", key="spin_btn"):
             st.session_state.spinning = True
             base_rotation = random.randint(720, 1800)
