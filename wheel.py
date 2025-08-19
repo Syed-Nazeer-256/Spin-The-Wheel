@@ -100,6 +100,7 @@ body {{
     border: 1px solid #e1e8ed;
     animation: fadeInUp 0.4s ease-out;
     width: 90%;
+    position: relative;
 }}
 
 @keyframes fadeInUp {{
@@ -261,7 +262,7 @@ with col_wheel:
 
 with col_content:
     st.markdown('<div class="content-container">', unsafe_allow_html=True)
-    # Result section first
+
     if st.session_state.spin_result and not st.session_state.spinning:
         st.markdown(f'''
         <div class="result-container">
@@ -270,18 +271,14 @@ with col_content:
         </div>
         ''', unsafe_allow_html=True)
     elif not st.session_state.spinning:
+        # This is the "Ready to spin?" state
         st.markdown('''
-        <div class="result-container" style="background: #f8f9fa; border: 2px dashed #dee2e6;">
+        <div class="result-container" style="background: #f8f9fa; border: 2px dashed #dee2e6; position: relative;">
             <div class="result-text">Ready to spin?</div>
             <div class="result-question">Click the button below to get your AWS S3 question!</div>
-        </div>
+            <div style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);">
         ''', unsafe_allow_html=True)
-    
-    # Button section - positioned below result
-    if st.session_state.spinning:
-        st.markdown('<div class="spinning-text">🎪 The wheel is spinning...</div>', unsafe_allow_html=True)
-    else:
-        st.markdown('<div style="display: flex; justify-content: flex-start; margin-left: -20px;">', unsafe_allow_html=True)
+        # The button itself
         if st.button("Spin The Wheel", key="spin_btn"):
             st.session_state.spinning = True
             base_rotation = random.randint(720, 1800)
@@ -289,7 +286,15 @@ with col_content:
             st.session_state.rotation += base_rotation + extra_rotation
             st.session_state.spin_result = ""
             st.rerun()
-        st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('''
+            </div>
+        </div>
+        ''', unsafe_allow_html=True)
+    
+    # This handles the spinning text
+    if st.session_state.spinning:
+        st.markdown('<div class="spinning-text">🎪 The wheel is spinning...</div>', unsafe_allow_html=True)
+    
     st.markdown('</div>', unsafe_allow_html=True)
 
 # After the spin, determine the result
