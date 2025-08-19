@@ -265,27 +265,22 @@ with col_wheel:
     ''', unsafe_allow_html=True)
 
 with col_content:
-    # Result section first
-    if st.session_state.spin_result and not st.session_state.spinning:
-        st.markdown(f'''
-        <div class="result-container">
-            <div class="result-text">🎉 Question!</div>
+    st.markdown('<div class="result-container">', unsafe_allow_html=True)
+    
+    if st.session_state.spinning:
+        st.markdown('<div class="spinning-text">The wheel is spinning...</div>', unsafe_allow_html=True)
+    else:
+        if st.session_state.spin_result:
+            st.markdown(f'''
+            <div class="result-text">Question!</div>
             <div class="result-question">{st.session_state.spin_result}</div>
-        </div>
-        ''', unsafe_allow_html=True)
-    elif not st.session_state.spinning:
-        st.markdown('''
-        <div class="result-container" style="background: #f8f9fa; border: 2px dashed #dee2e6;">
+            ''', unsafe_allow_html=True)
+        else:
+            st.markdown('''
             <div class="result-text">Ready to spin?</div>
             <div class="result-question">Click the button below to get your AWS S3 question!</div>
-        </div>
-        ''', unsafe_allow_html=True)
-    
-    # Button section - positioned below result with forced centering
-    if st.session_state.spinning:
-        st.markdown('<div class="spinning-text">🎪 The wheel is spinning...</div>', unsafe_allow_html=True)
-    else:
-        # Add explicit centering container
+            ''', unsafe_allow_html=True)
+        
         st.markdown('<div class="button-section">', unsafe_allow_html=True)
         if st.button("SPIN", key="spin_btn"):
             st.session_state.spinning = True
@@ -295,11 +290,13 @@ with col_content:
             st.session_state.spin_result = ""
             st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
+    
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # After the spin, determine the result
 if st.session_state.spinning:
     # Show spinning indicator
-    with st.spinner('🎪 The wheel is spinning...'):
+    with st.spinner('The wheel is spinning...'):
         time.sleep(4) # Wait for animation to finish
     
     st.session_state.spinning = False
