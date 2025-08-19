@@ -281,10 +281,12 @@ with col_content:
         </div>
         ''', unsafe_allow_html=True)
     
-    # Button section - positioned below result
+    # Button section - positioned below result with forced centering
     if st.session_state.spinning:
         st.markdown('<div class="spinning-text">🎪 The wheel is spinning...</div>', unsafe_allow_html=True)
     else:
+        # Add explicit centering container
+        st.markdown('<div class="button-wrapper">', unsafe_allow_html=True)
         if st.button("SPIN", key="spin_btn"):
             st.session_state.spinning = True
             base_rotation = random.randint(720, 1800)
@@ -292,6 +294,7 @@ with col_content:
             st.session_state.rotation += base_rotation + extra_rotation
             st.session_state.spin_result = ""
             st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
 
 # After the spin, determine the result
 if st.session_state.spinning:
