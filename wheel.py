@@ -23,6 +23,8 @@ if 'spinning' not in st.session_state:
     st.session_state.spinning = False
 if 'spin_result' not in st.session_state:
     st.session_state.spin_result = ""
+if 'start_spin_time' not in st.session_state:
+    st.session_state.start_spin_time = 0
 
 # Enhanced CSS for better layout and responsiveness
 st.markdown(f'''
@@ -262,71 +264,70 @@ with col_wheel:
 
 with col_content:
     st.markdown('<div class="content-container">', unsafe_allow_html=True)
-
-    if st.session_state.spin_result and not st.session_state.spinning:
-        st.markdown(f'''
-        <div class="result-container">
-            <div class="result-text"><b style="color: #FC3030;">Question?</b></div>
-            <div class="result-question">{st.session_state.spin_result}</div>
-        </div>
-        ''', unsafe_allow_html=True)
-    elif not st.session_state.spinning:
-        # This is the "Ready to spin?" state
-        st.markdown('''
-        <div class="result-container" style="background: #f8f9fa; border: 2px dashed #dee2e6; position: relative;">
-            <div class="result-text">Ready to spin?</div>
-            <div class="result-question">Click the button below to get your AWS S3 question!</div>
-            <div style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);">
-        ''', unsafe_allow_html=True)
-        # The button itself
+    
+    if st.session_state.spinning:
+        st.markdown('<div class="spinning-text">🎪 The wheel is spinning...</div>', unsafe_allow_html=True)
+    else: # Not spinning
+        if st.session_state.spin_result:
+            st.markdown(f'''
+            <div class="result-container">
+                <div class="result-text"><b style="color: #FC3030;">Question?</b></div>
+                <div class="result-question">{st.session_state.spin_result}</div>
+            </div>
+            ''', unsafe_allow_html=True)
+        else: # No result yet, show "Ready to spin?"
+            st.markdown('''
+            <div class="result-container" style="background: #f8f9fa; border: 2px dashed #dee2e6;">
+                <div class="result-text">Ready to spin?</div>
+                <div class="result-question">Click the button below to get your AWS S3 question!</div>
+            </div>
+            ''', unsafe_allow_html=True)
+        
+        # Always show the button when not spinning, outside of the result/ready container
         if st.button("Spin The Wheel", key="spin_btn"):
             st.session_state.spinning = True
+            st.session_state.start_spin_time = time.time() # Add this line
             base_rotation = random.randint(720, 1800)
             extra_rotation = random.randint(0, 359)
             st.session_state.rotation += base_rotation + extra_rotation
             st.session_state.spin_result = ""
             st.rerun()
-        st.markdown('''
-            </div>
-        </div>
-        ''', unsafe_allow_html=True)
-    
-    # This handles the spinning text
-    if st.session_state.spinning:
-        st.markdown('<div class="spinning-text">🎪 The wheel is spinning...</div>', unsafe_allow_html=True)
     
     st.markdown('</div>', unsafe_allow_html=True)
 
 # After the spin, determine the result
 if st.session_state.spinning:
     # Show spinning indicator
-    with st.spinner('🎪 The wheel is spinning...'):
-        time.sleep(4) # Wait for animation to finish
+    # st.spinner is not ideal here as it blocks the UI. The CSS animation handles the visual spin.
+    # We just need to wait for the CSS animation to complete before determining the result.
+    animation_duration = 3.5 # seconds, matches CSS transition in .wheel
     
-    st.session_state.spinning = False
-    final_angle = st.session_state.rotation % 360
+    if time.time() - st.session_state.start_spin_time >= animation_duration:
+        st.session_state.spinning = False
+        final_angle = st.session_state.rotation % 360
 
-    # There are 12 segments, each 30 degrees.
-    # The questions are ordered clockwise on the wheel.
-    # The arrow is at the top.
-    questions = [
-        "UPLOAD A CAT VIDEO TO S3 - HOW MANY COPIES ARE STORED BY DEFAULT?",
-        "LOW LATENCY, FREQUENT DATA?",
-        "AUTO MOVE TO CHEAPEST TIER?",
-        "RARELY USED, BUT FAST ACCESS?",
-        "SINGLE AZ, LOWER COST BACKUPS?",
-        "MILLISECOND RETRIEVAL, ARCHIVAL?",
-        "MINUTES-HOURS RETRIEVAL, CHEAPER ARCHIVE?",
-        "CHEAPEST, LONG-TERM HOURS RETRIEVAL?",
-        "CHEAPER THAN TAPE? (T/F)",
-        "DURABILITY OF ALL TIERS?",
-        "NAME 2 CLASSES",
-        "IF S3 WERE A SUPERHERO, WOULD IT BE INVISIBLE OR NEVER FORGETFUL?",
-    ]
-    
-    # Determine the winning segment.
-    # The arrow points downwards, so we are interested in the segment at the top.
-    # We add 45 degrees to be in the middle of the segment and account for the offset in the image.
-    segment_index = int(((360 - final_angle + 45) % 360) / 30)
-    st.session_state.spin_result = questions[segment_index]
-    st.rerun()
+        # There are 12 segments, each 30 degrees.
+        # The questions are ordered clockwise on the wheel.
+        # The arrow is at the top.
+        questions = [
+            "UPLOAD A CAT VIDEO TO S3 - HOW MANY COPIES ARE STORED BY DEFAULT?",
+            "LOW LATENCY, FREQUENT DATA?",
+            "AUTO MOVE TO CHEAPEST TIER?",
+            "RARELY USED, BUT FAST ACCESS?",
+            "SINGLE AZ, LOWER COST BACKUPS?",
+            "MILLISECOND RETRIEVAL, ARCHIVAL?",
+            "MINUTES-HOURS RETRIEVAL, CHEAPER ARCHIVE?",
+            "CHEAPEST, LONG-TERM HOURS RETRIEVAL?",
+            "CHEAPER THAN TAPE? (T/F)",
+            "DURABILITY OF ALL TIERS?",
+            "NAME 2 CLASSES",
+            "IF S3 WERE A SUPERHERO, WOULD IT BE INVISIBLE OR NEVER FORGETFUL?",
+        ]
+        
+        # Determine the winning segment.
+        # The arrow points downwards, so we are interested in the segment at the top.
+        # We add 45 degrees to be in the middle of the segment and account for the offset in the image.
+        segment_index = int(((360 - final_angle + 45) % 360) / 30)
+        st.session_state.spin_result = questions[segment_index]
+        st.rerun() # Rerun to display the result
+    # else: The script will re-run, and the CSS animation will continue until animation_duration is met.
