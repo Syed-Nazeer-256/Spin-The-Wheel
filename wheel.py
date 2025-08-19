@@ -265,18 +265,20 @@ with col_wheel:
 with col_content:
     st.markdown('<div class="content-container">', unsafe_allow_html=True)
     
+    result_placeholder = st.empty() # New line
+    
     if st.session_state.spinning:
-        st.markdown('<div class="spinning-text">🎪 The wheel is spinning...</div>', unsafe_allow_html=True)
+        result_placeholder.markdown('<div class="spinning-text">🎪 The wheel is spinning...</div>', unsafe_allow_html=True)
     else: # Not spinning
         if st.session_state.spin_result:
-            st.markdown(f'''
+            result_placeholder.markdown(f'''
             <div class="result-container">
                 <div class="result-text"><b style="color: #FC3030;">Question?</b></div>
                 <div class="result-question">{st.session_state.spin_result}</div>
             </div>
             ''', unsafe_allow_html=True)
         else: # No result yet, show "Ready to spin?"
-            st.markdown('''
+            result_placeholder.markdown('''
             <div class="result-container" style="background: #f8f9fa; border: 2px dashed #dee2e6;">
                 <div class="result-text">Ready to spin?</div>
                 <div class="result-question">Click the button below to get your AWS S3 question!</div>
