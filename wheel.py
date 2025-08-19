@@ -285,17 +285,7 @@ with col_content:
     if st.session_state.spinning:
         st.markdown('<div class="spinning-text">🎪 The wheel is spinning...</div>', unsafe_allow_html=True)
     else:
-        # Custom button with Rapyder logo
-        st.markdown(f'''
-        <div class="custom-button-container">
-            <button class="custom-spin-button" onclick="document.querySelector('[data-testid="baseButton-secondary"]').click()">
-                <img src="data:image/png;base64,{logo_base64}" class="button-logo" alt="Rapyder Logo">
-            </button>
-        </div>
-        ''', unsafe_allow_html=True)
-        
-        # Hidden Streamlit button for functionality
-        if st.button("Hidden", key="spin_btn", help="Spin the wheel"):
+        if st.button("SPIN", key="spin_btn"):
             st.session_state.spinning = True
             base_rotation = random.randint(720, 1800)
             extra_rotation = random.randint(0, 359)
