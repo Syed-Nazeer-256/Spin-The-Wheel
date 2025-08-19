@@ -27,10 +27,10 @@ if 'spin_result' not in st.session_state:
 # Enhanced CSS for better layout and responsiveness
 st.markdown(f'''
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans&display=swap');
 
 * {{
-    font-family: 'Inter', sans-serif;
+    font-family: 'DM Sans', sans-serif;
 }}
 
 body {{
@@ -219,6 +219,14 @@ div.stButton {{
 .stHeader {{ display: none; }}
 footer {{ visibility: hidden; }}
 
+.content-container {{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}}
+
 /* Responsive design */
 @media (max-width: 768px) {{
     .wheel-container {{
@@ -247,7 +255,7 @@ st.markdown("""
     text-align: center; 
     font-size: 2.5rem; 
     color: #2c3e50;
-    font-weight: 300;
+    font-weight: bold;
     margin: 20px 0 30px 0;
     letter-spacing: 3px;
 ">Spin the Wheel</h1>
@@ -267,6 +275,7 @@ with col_wheel:
     ''', unsafe_allow_html=True)
 
 with col_content:
+    st.markdown('<div class="content-container">', unsafe_allow_html=True)
     # Result section first
     if st.session_state.spin_result and not st.session_state.spinning:
         st.markdown(f'''
@@ -294,6 +303,7 @@ with col_content:
             st.session_state.rotation += base_rotation + extra_rotation
             st.session_state.spin_result = ""
             st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # After the spin, determine the result
 if st.session_state.spinning:
@@ -328,15 +338,3 @@ if st.session_state.spinning:
     segment_index = int(((360 - final_angle + 45) % 360) / 30)
     st.session_state.spin_result = questions[segment_index]
     st.rerun()
-
-st.markdown("""
-<div style="
-    text-align: center; 
-    font-size: 0.8rem; 
-    color: #aaa;
-    margin-top: 50px;
-">
-    Made with ❤️ using Streamlit
-</div>
-""", unsafe_allow_html=True)
-
