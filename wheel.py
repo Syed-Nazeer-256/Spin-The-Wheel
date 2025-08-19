@@ -7,24 +7,12 @@ import time
 # Set page layout
 st.set_page_config(layout="wide", page_title="Spin the Wheel Game", page_icon="🎯")
 
-# Clean, minimal title
-st.markdown("""
-<h1 style="
-    text-align: center; 
-    font-size: 2.5rem; 
-    color: #2c3e50;
-    font-weight: 300;
-    margin: 20px 0 30px 0;
-    letter-spacing: 3px;
-">Spin the Wheel</h1>
-""", unsafe_allow_html=True)
-
 # Function to convert image to base64
 def get_image_as_base64(path):
     with open(path, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode()
 
-# Image paths
+# Image path
 image_path = "spin-wheel-01.png"
 image_base64 = get_image_as_base64(image_path)
 
@@ -251,6 +239,20 @@ footer {{ visibility: hidden; }}
 </style>
 ''', unsafe_allow_html=True)
 
+
+
+# Clean, minimal title
+st.markdown("""
+<h1 style="
+    text-align: center; 
+    font-size: 2.5rem; 
+    color: #2c3e50;
+    font-weight: 300;
+    margin: 20px 0 30px 0;
+    letter-spacing: 3px;
+">Spin the Wheel</h1>
+""", unsafe_allow_html=True)
+
 # Create a two-column layout
 col_wheel, col_content = st.columns([1.2, 1])
 
@@ -265,23 +267,26 @@ with col_wheel:
     ''', unsafe_allow_html=True)
 
 with col_content:
-    st.markdown('<div class="result-container">', unsafe_allow_html=True)
-    
-    if st.session_state.spinning:
-        st.markdown('<div class="spinning-text">The wheel is spinning...</div>', unsafe_allow_html=True)
-    else:
-        if st.session_state.spin_result:
-            st.markdown(f'''
-            <div class="result-text">Question!</div>
+    # Result section first
+    if st.session_state.spin_result and not st.session_state.spinning:
+        st.markdown(f'''
+        <div class="result-container">
+            <div class="result-text"><b style="color: #FC3030;">Question?</b></div>
             <div class="result-question">{st.session_state.spin_result}</div>
-            ''', unsafe_allow_html=True)
-        else:
-            st.markdown('''
+        </div>
+        ''', unsafe_allow_html=True)
+    elif not st.session_state.spinning:
+        st.markdown('''
+        <div class="result-container" style="background: #f8f9fa; border: 2px dashed #dee2e6;">
             <div class="result-text">Ready to spin?</div>
             <div class="result-question">Click the button below to get your AWS S3 question!</div>
-            ''', unsafe_allow_html=True)
-        
-        st.markdown('<div class="button-section">', unsafe_allow_html=True)
+        </div>
+        ''', unsafe_allow_html=True)
+    
+    # Button section - positioned below result
+    if st.session_state.spinning:
+        st.markdown('<div class="spinning-text">🎪 The wheel is spinning...</div>', unsafe_allow_html=True)
+    else:
         if st.button("SPIN", key="spin_btn"):
             st.session_state.spinning = True
             base_rotation = random.randint(720, 1800)
@@ -289,14 +294,11 @@ with col_content:
             st.session_state.rotation += base_rotation + extra_rotation
             st.session_state.spin_result = ""
             st.rerun()
-        st.markdown('</div>', unsafe_allow_html=True)
-    
-    st.markdown('</div>', unsafe_allow_html=True)
 
 # After the spin, determine the result
 if st.session_state.spinning:
     # Show spinning indicator
-    with st.spinner('The wheel is spinning...'):
+    with st.spinner('🎪 The wheel is spinning...'):
         time.sleep(4) # Wait for animation to finish
     
     st.session_state.spinning = False
@@ -326,3 +328,15 @@ if st.session_state.spinning:
     segment_index = int(((360 - final_angle + 45) % 360) / 30)
     st.session_state.spin_result = questions[segment_index]
     st.rerun()
+
+st.markdown("""
+<div style="
+    text-align: center; 
+    font-size: 0.8rem; 
+    color: #aaa;
+    margin-top: 50px;
+">
+    Made with ❤️ using Streamlit
+</div>
+""", unsafe_allow_html=True)
+
